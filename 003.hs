@@ -1,4 +1,3 @@
-
 genListToSqrtN :: Integer -> [Integer]
 genListToSqrtN n = [2 .. sqN]
   where n' = fromIntegral n
