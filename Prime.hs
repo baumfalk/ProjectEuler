@@ -1,5 +1,6 @@
 module Prime where
 
+import Data.Array.Unboxed
 genListToSqrtN :: Integer -> [Integer]
 genListToSqrtN n = [2 .. sqN]
   where n' = fromIntegral n
@@ -13,11 +14,25 @@ isPrime n = (not . or . map checkFunc) list
         checkFunc = \i  -> n `mod` i == 0
 
 isP = isPrime        
-        
+
+primes :: [Integer]
 primes = filter isPrime (2:[3,5..])
+
+primesToNA n = 2: [i | i <- [3,5..n], ar ! i]
+  where
+    ar = f 5 $ accumArray (\ a b -> False) True (3,n) 
+                        [(i,()) | i <- [9,15..n]]
+    f p a | q > n = a
+          | True  = if null x then a2 else f (head x) a2
+      where q = p*p
+            a2  :: UArray Int Bool
+            a2 = a // [(i,False) | i <- [q, q+2*p..n]]
+            x  = [i | i <- [p+2,p+4..n], a2 ! i]
+
 
 getPrimeFactors :: Integer -> [Integer]
 getPrimeFactors n = getPrimeFactors' n primes
+  
 
 getPrimeFactors' :: Integer -> [Integer] -> [Integer]        
 getPrimeFactors' 0 _ = []
